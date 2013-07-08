@@ -1,0 +1,79 @@
+#!/bin/bash
+
+case $1 in
+start)
+echo "Starting ExaBGP ..."
+echo "Wait..."
+echo " "
+
+echo "1 - Configuring interfaces IP"
+ifconfig eth1 0
+ifconfig eth2 0
+ifconfig eth3 0
+ifconfig eth4 0
+ifconfig eth1 172.31.1.1/24
+ifconfig eth2 10.0.0.1/24
+ifconfig eth3 30.0.0.1/24
+ifconfig eth4 50.0.0.1/24
+echo "OK"
+echo " "
+
+echo "2 - Stopping Quagga"
+/etc/init.d/quagga stop
+echo "OK"
+echo " "
+
+echo "3 - Starting ExaBGP"
+/exabgp-3.1.10/sbin/exabgp /exabgp-3.1.10/etc/exabgp/exabgp.conf >> /var/log/exabgp.log &
+echo "OK"
+echo " "
+
+echo "4 - Configuring back routing"
+route add -net 172.31.2.0/24 gw 10.0.0.2
+route add -net 172.31.3.0/24 gw 30.0.0.3
+route add -net 172.31.4.0/24 gw 50.0.0.4
+echo "OK"
+echo " "
+
+echo "ExaBGP started."               >  /var/tmp/ExaBGPstatus 
+echo "Start Date: $(date +%d/%m/%Y)" >> /var/tmp/ExaBGPstatus
+echo "Start Time: $(date +%X)"       >> /var/tmp/ExaBGPstatus
+;;
+
+
+status)
+cat /var/tmp/ExaBGPstatus
+;;
+
+
+stop)
+
+echo "Stopping ExaBGP ..."
+echo "Wait..."
+echo " "
+
+echo "1 - Cleaning IPs and back routes"
+ifconfig eth1 0
+ifconfig eth2 0
+ifconfig eth3 0
+ifconfig eth4 0
+echo "OK"
+echo " "
+
+echo "2 - Stopping ExaBGP"
+processID=`ps ax | grep /exabgp-3.1.10/etc/exabgp/exabgp.conf | grep -v grep | awk '{print $1}'`
+kill -9 $processID 
+echo "OK"
+echo " "
+
+echo "ExaBGP success stopped. Restart ExaBGP or start Quagga to communicate again..."
+
+echo "ExaBGP Stopped."              >  /var/tmp/ExaBGPstatus
+echo "Stop Date: $(date +%d/%m/%Y)" >> /var/tmp/ExaBGPstatus
+echo "Stop Time: $(date +%X)"       >> /var/tmp/ExaBGPstatus
+;;
+
+
+*)
+echo "Use exabgp with parameters: <start|status|stop>";;
+esac

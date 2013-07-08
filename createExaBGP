@@ -1,0 +1,51 @@
+#!/bin/bash
+
+if [ "$EUID" != "0" ]; then
+  echo "You must be root to run this script. Sorry, dude!"
+  exit 1
+fi
+
+LXCDIR="/var/lib/lxc"
+CONFIG="/home/routeflow/RouteFlow/rftest/config/ExaBGP"
+
+# Setup LXC and base container
+echo "apt-get lxc..."
+apt-get -y --force-yes install lxc
+
+echo "Creating /var/lib/lxc..."
+mkdir -p $LXCDIR
+
+echo "Destroy lxc machines..."
+cd $LXCDIR
+for VM in *
+do
+    lxc-destroy -n $VM
+done
+
+echo "Creating base lxc virtual machine..."
+lxc-create -t ubuntu -n base
+
+echo "apt-getting update for lxc machine..."
+chroot $LXCDIR/base/rootfs apt-get update
+
+# !!!
+# ADD THE PACKETS YOU NEED TO INSTALL HERE
+# !!!
+echo
+echo "Installing lxc programs..."
+chroot $LXCDIR/base/rootfs apt-get -y --force-yes install quagga libboost-thread-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev rsyslog vlan tcpdump wget 
+
+chroot $LXCDIR/base/rootfs wget http://exabgp.googlecode.com/files/exabgp-3.1.10.tgz;
+chroot $LXCDIR/base/rootfs tar zxvf exabgp-3.1.10.tgz;
+chroot $LXCDIR/base/rootfs rm exabgp-3.1.10.tgz;
+echo "Installed lxc programs !!!"
+echo
+# !!!
+
+# Clone the base container to make other containers based on config
+cd $CONFIG
+for VM in *
+do
+    lxc-clone -o base -n $VM
+    cp -R $VM/* $LXCDIR/$VM
+done
