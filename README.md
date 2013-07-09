@@ -8,7 +8,7 @@ To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is 
 
 # Building
 
-First of all, you need have RouteFlow built and working. RouteFlow can be taken [here](https://github.com/CPqD/RouteFlow/blob/master/README.md#building). So, you need clone this repository `git clone https://github.com/emersonbarea/RouteFlow-ExaBGP.git`. Also the mininet scrips needed are the same as routeflow [rftest2](https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf).
+First of all, you need have RouteFlow built and working. RouteFlow can be taken [here](https://github.com/CPqD/RouteFlow/blob/master/README.md#building). After that, you need clone this repository `git clone https://github.com/emersonbarea/RouteFlow-ExaBGP.git` and use the same Mininet scripts like in RouteFlow [rftest2](https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf).
 
 # Environment
 
