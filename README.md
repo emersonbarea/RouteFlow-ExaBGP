@@ -1,16 +1,16 @@
 # Welcome
 
-This version of RouteFlow ([RouteFlow](http://cpqd.github.io/RouteFlow/)) is responsible for demonstrate the behavior of a topology dynamically routed via BGP, where the Quagga engine ([Quagga](http://www.nongnu.org/quagga/)) is used with ExaBGP ([ExaBGP](https://code.google.com/p/exabgp/)) to route the topology used in this example.
+This version of [RouteFlow](http://cpqd.github.io/RouteFlow/) is responsible for demonstrate the behavior of a topology dynamically routed via BGP, where the [Quagga](http://www.nongnu.org/quagga/) engine is used with [ExaBGP](https://code.google.com/p/exabgp/) to route the topology used in this example.
 
 # Overview
 
-To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is also required to use Mininet ([Mininet](http://mininet.org/)). The example of topology used in this case was “Four routers running OSPF” that can be find in the lik: `https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf`, where there was only a change in the rfvmA virtual machine, taking off Quagga and using ExaBGP instead.
+To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is also required to use [Mininet](http://mininet.org/). The example of topology used in this case was [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf), where there was only a change in the rfvmA virtual machine, taking off Quagga and using ExaBGP instead.
 
 # Environment
 
 ## 1 – createExaBGP
 
-This script creates lxc routers using config/ExaBGP configurations files. RfvmA configuration file creates a lxc that includes `/etc/init.d/exabgp` script that is responsible for start and stop ExaBGP engine.
+This script creates lxc routers using `config/ExaBGP` configurations files. RfvmA configuration file creates a lxc that includes `/etc/init.d/exabgp` script that is responsible for start and stop ExaBGP engine.
 
 ## 2 – rftestExaBGP
 
