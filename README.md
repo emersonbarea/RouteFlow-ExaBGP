@@ -6,6 +6,10 @@ This version of [RouteFlow](http://cpqd.github.io/RouteFlow/) is responsible for
 
 To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is also required to use [Mininet](http://mininet.org/). The example of topology used in this case was [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf), where there was only a change in the rfvmA virtual machine, taking off Quagga and using ExaBGP instead.
 
+# Building
+
+First of all, you need have RouteFlow installed and working. RouteFlow can be taked [here](https://github.com/CPqD/RouteFlow/blob/master/README.md#building). So, you need to use `createExaBGP` script to create all lxc routers and `rftestExaBGP` to start RouteFlow enviroment.
+
 # Environment
 
 ## 1 – createExaBGP
