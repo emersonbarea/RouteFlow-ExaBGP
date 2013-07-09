@@ -8,7 +8,7 @@ To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is 
 
 # Building
 
-First of all, you need have RouteFlow installed and working. RouteFlow can be taked [here](https://github.com/CPqD/RouteFlow/blob/master/README.md#building). So, you need to use `createExaBGP` script to create all lxc routers and `rftestExaBGP` to start RouteFlow enviroment.
+First of all, you need have RouteFlow built and working. RouteFlow can be taken [here](https://github.com/CPqD/RouteFlow/blob/master/README.md#building). So, you need clone this repository `git clone https://github.com/emersonbarea/RouteFlow-ExaBGP.git`.
 
 # Environment
 
