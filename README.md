@@ -14,7 +14,7 @@ This script creates lxc routers using `config/ExaBGP` configurations files. Rfvm
 
 ## 2 – rftestExaBGP
 
-This script is responsible for start the services RouteFlow topology.
+This script starts RouteFlow services.
 
 After created and started RouteFlow services, Mininet should be used to mount the environment for testing. To verify the correct operation, you just have to examine the routing table of each lxc machine (rfvmA, rfvmB, rfvmC e rfvmD). Note that the route announced by ExaBGP and Quagga are different in rfvmA. For example:
 
