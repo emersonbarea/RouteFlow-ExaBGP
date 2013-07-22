@@ -12,13 +12,23 @@ First of all, you need have RouteFlow built and working. RouteFlow can be taken 
 
 # Environment
 
-## 1 – createExaBGP
+## 1 – Topology
+
+![Topology](/RouteFlow-ExaBGP_Topology.png)
+
+## 2 – lxc
+
+There are four lxc routers, named `rfvmA`, `rfvmB`, `rfvmC` and `rfvmD`. RfvmB, C and D are running a Quagga router engine that uses BGP routing protocol (in EBGP mode) to mount all route tables. RfvmA is running ExaBGP engine that is responsible to inject routes in rfvmB, C and D. RfvmA configuration file can be accessed in lxc rfvmA router, under `/exabgp-3.1.10/etc/exabgp/exabgp.conf`, but changes can be done at rfvmA configuration before running `createExaBGP` script.
+
+RfvmA has a script `/etc/init.d/exabgp` that is responsible for start and stop ExaBGP service. This script configures correct IP addresses in lxc rfvmA interfaces, starts ExaBGP service using correct configuration file and puts statics routes to back communication to rfvmB, C and D. When it is used with **stop** parameter, all ExaBGP configuration is taked off.
+
+## 3 – Script createExaBGP
 
 This [script](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/createExaBGP) creates lxc routers using `config/ExaBGP` configuration files. All lxc routers has same softwares included in [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf), plus ExaBGP included with `wget http://exabgp.googlecode.com/files/exabgp-3.1.10.tgz` command.
 
-### 1.1 - `RfvmA` configuration files
+### 3.1 - `RfvmA` configuration files
 
-`RfvmA` configuration files creates a lxc that includes `/etc/init.d/exabgp` script that is responsible for start and stop ExaBGP engine. Some others importants functions of this script are:
+`CreateExaBGP` script includes `rfvmA` scripts creation like `/etc/init.d/exabgp`, that is responsible for start and stop ExaBGP engine. Some others importants functions of `/etc/init.d/exabgp` script are:
 
 1 - Configure `rfvmA` IP addresses
 
@@ -42,9 +52,9 @@ route add -net 172.31.4.0/24 gw 50.0.0.4
 
 It is possible use other routing methods, but this is simplest for this scenario.
 
-## 2 – rftestExaBGP
+## 4 – Script rftestExaBGP
 
-This script starts RouteFlow services.
+This [script](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/rftestExaBGP) starts all RouteFlow services. `RfvmA` is started running ExaBGP engine and `rfvmB`, `rfvmC` and `rfvmD` are started running Quagga engine.
 
 After created and started RouteFlow services, Mininet should be used to mount the environment for testing. To verify the correct operation, you just have to examine the routing table of each lxc machine (rfvmA, rfvmB, rfvmC e rfvmD). Note that the route announced by ExaBGP and Quagga are different in rfvmA. For example:
 
@@ -90,14 +100,97 @@ neighbor 30.0.0.3{
 
 [ExaBGP code file] (https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/exabgp-3.1.10/etc/exabgp/exabgp.conf)
 
+There not  a technical motivation for the difference between ExaBGP and Quagga routes, just for facilitate the visualization of when using one or other.
 
-## 3 – Topology
+## 5 – Questions and Results
 
-![Topology](/RouteFlow-ExaBGP_Topology.png)
+1 - Show me `rfvmA` routing table when it is running Quagga and ExaBGP
+
+`RfvmA` Quagga routing table when it is running Quagga
+
+```
+root@rfvmA:/home/ubuntu# vtysh
+rfvmA# show ip route
+Codes: K - kernel route, C - connected, S - static, R - RIP, O - OSPF,
+       I - ISIS, B - BGP, > - selected route, * - FIB route
+B   10.0.0.0/24 [20/1] via 10.0.0.2 inactive, 00:12:43
+C>* 10.0.0.0/24 is directly connected, eth2
+C>* 30.0.0.0/24 is directly connected, eth3
+B>* 40.0.0.0/24 [20/1] via 10.0.0.2, eth2, 00:12:43
+C>* 50.0.0.0/24 is directly connected, eth4
+C>* 127.0.0.0/8 is directly connected, lo
+C>* 172.31.1.0/24 is directly connected, eth1
+B>* 172.31.2.0/24 [20/0] via 10.0.0.2, eth2, 00:12:43
+B>* 172.31.3.0/24 [20/0] via 30.0.0.3, eth3, 00:12:46
+B>* 172.31.4.0/24 [20/0] via 50.0.0.4, eth4, 00:12:46
+B   192.169.1.0/24 [20/1] via 10.0.0.2, eth2, 00:12:43
+C>* 192.169.1.0/24 is directly connected, eth0
+```
+
+`RfvmA` **linux** routing table when it is running ExaBGP
+
+```
+root@rfvmA:/home/ubuntu# route -n
+Kernel IP routing table
+Destination    Gateway     Genmask          Flags     Metric     Ref     Use Iface
+10.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth2
+30.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth3
+50.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth4
+172.31.1.0     0.0.0.0     255.255.255.0    U         0          0       0 eth1
+172.31.2.0     10.0.0.2    255.255.255.0    UG        0          0       0 eth2
+172.31.3.0     30.0.0.3    255.255.255.0    UG        0          0       0 eth3
+172.31.4.0     50.0.0.4    255.255.255.0    UG        0          0       0 eth4
+192.169.1.0    0.0.0.0     255.255.255.0    U         0          0       0 eth0
+root@rfvmA:/home/ubuntu#
+```
+
+2 - Show me `rfvmB` routing table when `rfvmA` is running Quagga and ExaBGP
+
+`RfvmB` Quagga routing table when `rfvmA` is running Quagga
+
+```
+root@rfvmB:/home/ubuntu# vtysh
+rfvmB# show ip route
+Codes: K - kernel route, C - connected, S - static, R - RIP, O - OSPF,
+       I - ISIS, B - BGP, > - selected route, * - FIB route
+C>* 10.0.0.0/24 is directly connected, eth2
+C>* 40.0.0.0/24 is directly connected, eth3
+C>* 127.0.0.0/8 is directly connected, lo
+B>* 172.31.1.0/24 [20/0] via 10.0.0.1, eth2, 00:00:02
+C>* 172.31.2.0/24 is directly connected, eth1
+B>* 172.31.3.0/24 [20/0] via 40.0.0.4, eth3, 00:05:02
+B>* 172.31.4.0/24 [20/0] via 40.0.0.4, eth3, 00:05:32
+C>* 192.169.1.0/24 is directly connected, eth0
+```
+
+`RfvmB` Quagga routing table when `rfvmA` is running ExaBGP
+
+```
+root@rfvmB:/home/ubuntu# vtysh
+rfvmB# show ip route
+Codes: K - kernel route, C - connected, S - static, R - RIP, O - OSPF,
+       I - ISIS, B - BGP, > - selected route, * - FIB route
+C>* 10.0.0.0/24 is directly connected, eth2
+C>* 40.0.0.0/24 is directly connected, eth3
+C>* 127.0.0.0/8 is directly connected, lo
+B>* 172.31.1.100/32 [20/0] via 10.0.0.1, eth2, 00:04:19
+C>* 172.31.2.0/24 is directly connected, eth1
+B>* 172.31.3.0/24 [20/0] via 40.0.0.4, eth3, 00:02:10
+B>* 172.31.4.0/24 [20/0] via 40.0.0.4, eth3, 00:02:40
+C>* 192.169.1.0/24 is directly connected, eth0
+```
+
+3 - Show me Mininet `pingall` output when `rfvmA` is running ExaBGP
+
+```
+mininet> pingall
+*** Ping: testing ping reachability
+h1 -> h2 h3 h4
+h2 -> h1 h3 h4
+h3 -> h1 h2 h4
+h4 -> h1 h2 h3
+*** Results: 0% dropped (0/12 lost)
+mininet>
+```
 
 
-## 4 – lxc
-
-There are four lxc routers, named **rfvmA**, **rfvmB**, **rfvmC** and **rfvmD**. RfvmB, C and D are running a Quagga router engine that uses BGP routing protocol to mount all route tables. RfvmA is running ExaBGP engine that is responsible to inject routes in B, C and D. RfvmA configuration file can be accessed in lxc rfvmA router, under `/exabgp-3.1.10/etc/exabgp/exabgp.conf`, but changes can be done at rfvmA configuration before running createExaBGP script.
-
-RfvmA has a script `/etc/init.d/exabgp` that is responsible for start and stop ExaBGP service. This script configures correct IP addresses in lxc rfvmA interfaces, starts ExaBGP service using correct configuration file and puts statics routes to back communication to rfvmB, C and D. When it is used with **stop** parameter, all ExaBGP configuration is taked off.
