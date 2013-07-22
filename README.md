@@ -26,8 +26,8 @@ Quagga: publishes 172.31.1.0/24
 
 rfvmA example BGP Quagga code: [here](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/etc/quagga/bgpd.conf)
 
-password routeflow
-enable password routeflow
+`password routeflow`
+`enable password routeflow`
 !
 router bgp 65001
         bgp router-id 172.31.1.1
@@ -37,7 +37,7 @@ router bgp 65001
         neighbor 50.0.0.4 remote-as 65004
         no auto-summary
 !
-log file /var/log/quagga/bgpd.log
+log file /var/log/quagga/bgpd.log`
 
 ExaBGP: publishes 172.31.1.100/32
 
