@@ -24,7 +24,7 @@ After created and started RouteFlow services, Mininet should be used to mount th
 
 Quagga: publishes 172.31.1.0/24
 
-rfvmA example BGP Quagga code: [here](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/etc/quagga/bgpd.conf)
+rfvmA BGP Quagga code:
 
 ```
 password routeflow
@@ -41,8 +41,29 @@ router bgp 65001
 log file /var/log/quagga/bgpd.log
 ```
 
+ [view Quagga code file](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/etc/quagga/bgpd.conf)
+
+
 ExaBGP: publishes 172.31.1.100/32
 
+rfvmA example BGP ExaBGP code: 
+
+```
+neighbor 30.0.0.3{
+        description "a quagga test peer";
+        router-id 30.0.0.1;
+        local-address 30.0.0.1;
+        local-as 65001;
+        peer-as 65003;
+        static {
+                route 172.31.1.100/32 next-hop 30.0.0.1;
+        }
+}
+
+...
+```
+
+[view ExaBGP code file] (https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/exabgp-3.1.10/etc/exabgp/exabgp.conf)
 
 
 ## 3 – Topology
