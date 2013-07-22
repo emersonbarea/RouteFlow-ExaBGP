@@ -41,7 +41,7 @@ router bgp 65001
 log file /var/log/quagga/bgpd.log
 ```
 
- [view Quagga code file](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/etc/quagga/bgpd.conf)
+[Quagga code file](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/etc/quagga/bgpd.conf)
 
 
 ExaBGP: publishes 172.31.1.100/32
@@ -59,11 +59,10 @@ neighbor 30.0.0.3{
                 route 172.31.1.100/32 next-hop 30.0.0.1;
         }
 }
-
 ...
 ```
 
-[view ExaBGP code file] (https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/exabgp-3.1.10/etc/exabgp/exabgp.conf)
+[ExaBGP code file] (https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/config/ExaBGP/rfvmA/rootfs/exabgp-3.1.10/etc/exabgp/exabgp.conf)
 
 
 ## 3 – Topology
