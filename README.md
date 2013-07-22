@@ -4,7 +4,7 @@ This version of [RouteFlow](http://cpqd.github.io/RouteFlow/) is responsible for
 
 # Overview
 
-To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is also required to use [Mininet](http://mininet.org/). The example of topology used in this case was [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf), where there was only a change in the rfvmA virtual machine, taking off Quagga and using ExaBGP instead.
+To create the proposed environment, besides RouteFlow, Quagga and ExaBGP, it is also required to use [Mininet](http://mininet.org/). The example of topology used in this case was [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf) with some changes. Firstl, Quagga OSPF configuration was removed and BGP was configured to be the routing protocol used. Second, `rfvmA` has Quagga disabled and ExaBGP was configured to inject BGP routes in `rfvmB`, `rfvmC` and `rfvmD`.
 
 # Building
 
@@ -14,7 +14,33 @@ First of all, you need have RouteFlow built and working. RouteFlow can be taken 
 
 ## 1 – createExaBGP
 
-This script creates lxc routers using `config/ExaBGP` configurations files. RfvmA configuration file creates a lxc that includes `/etc/init.d/exabgp` script that is responsible for start and stop ExaBGP engine.
+This [script](https://github.com/emersonbarea/RouteFlow-ExaBGP/blob/master/createExaBGP) creates lxc routers using `config/ExaBGP` configuration files. All lxc routers has same softwares included in [Four routers running OSPF] (https://sites.google.com/site/routeflow/documents/tutorial2-four-routers-with-ospf), plus ExaBGP included with `wget http://exabgp.googlecode.com/files/exabgp-3.1.10.tgz` command.
+
+### 1.1 - `RfvmA` configuration files
+
+`RfvmA` configuration files creates a lxc that includes `/etc/init.d/exabgp` script that is responsible for start and stop ExaBGP engine. Some others importants functions of this script are:
+
+1 - Configure `rfvmA` IP addresses
+
+```
+ifconfig eth1 172.31.1.1/24
+ifconfig eth2 10.0.0.1/24
+ifconfig eth3 30.0.0.1/24
+ifconfig eth4 50.0.0.1/24
+```
+This configuration was previously done by Quagga.
+
+2 - Configure back routing
+
+ExaBGP is not capable of receive BGP routes from other Quagga lxc, so is necessary to create back routes to `rfvmB`, `rfvmC` and `rfvmD`.
+
+```
+route add -net 172.31.2.0/24 gw 10.0.0.2
+route add -net 172.31.3.0/24 gw 30.0.0.3
+route add -net 172.31.4.0/24 gw 50.0.0.4
+```
+
+It is possible use other routing methods, but this is simplest for this scenario.
 
 ## 2 – rftestExaBGP
 
