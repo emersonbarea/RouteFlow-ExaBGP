@@ -102,11 +102,11 @@ neighbor 30.0.0.3{
 
 There not  a technical motivation for the difference between ExaBGP and Quagga routes, just for facilitate the visualization of when using one or other.
 
-## 5 – Questions and Results
+## 5 – Results
 
-1 - Show me `rfvmA` routing table when it is running Quagga and ExaBGP
+1 - `RfvmA` routing table when it is running Quagga and ExaBGP
 
-`RfvmA` Quagga routing table when it is running Quagga
+`RfvmA` Quagga routing table when it is running **Quagga**
 
 ```
 root@rfvmA:/home/ubuntu# vtysh
@@ -127,26 +127,26 @@ B   192.169.1.0/24 [20/1] via 10.0.0.2, eth2, 00:12:43
 C>* 192.169.1.0/24 is directly connected, eth0
 ```
 
-`RfvmA` **linux** routing table when it is running ExaBGP
+**Linux** routing table when `rfvmA` is running ExaBGP
 
 ```
 root@rfvmA:/home/ubuntu# route -n
 Kernel IP routing table
-Destination    Gateway     Genmask          Flags     Metric     Ref     Use Iface
-10.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth2
-30.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth3
-50.0.0.0       0.0.0.0     255.255.255.0    U         0          0       0 eth4
-172.31.1.0     0.0.0.0     255.255.255.0    U         0          0       0 eth1
-172.31.2.0     10.0.0.2    255.255.255.0    UG        0          0       0 eth2
-172.31.3.0     30.0.0.3    255.255.255.0    UG        0          0       0 eth3
-172.31.4.0     50.0.0.4    255.255.255.0    UG        0          0       0 eth4
-192.169.1.0    0.0.0.0     255.255.255.0    U         0          0       0 eth0
+Destination    Gateway    Genmask          Flags     Metric    Ref    Use    Iface
+10.0.0.0       0.0.0.0    255.255.255.0    U         0         0      0      eth2
+30.0.0.0       0.0.0.0    255.255.255.0    U         0         0      0      eth3
+50.0.0.0       0.0.0.0    255.255.255.0    U         0         0      0      eth4
+172.31.1.0     0.0.0.0    255.255.255.0    U         0         0      0      eth1
+172.31.2.0     10.0.0.2   255.255.255.0    UG        0         0      0      eth2
+172.31.3.0     30.0.0.3   255.255.255.0    UG        0         0      0      eth3
+172.31.4.0     50.0.0.4   255.255.255.0    UG        0         0      0      eth4
+192.169.1.0    0.0.0.0    255.255.255.0    U         0         0      0      eth0
 root@rfvmA:/home/ubuntu#
 ```
 
-2 - Show me `rfvmB` routing table when `rfvmA` is running Quagga and ExaBGP
+2 - `RfvmB` routing table when `rfvmA` is running Quagga and ExaBGP
 
-`RfvmB` Quagga routing table when `rfvmA` is running Quagga
+`RfvmB` Quagga routing table when `rfvmA` is running **Quagga**
 
 ```
 root@rfvmB:/home/ubuntu# vtysh
@@ -163,7 +163,7 @@ B>* 172.31.4.0/24 [20/0] via 40.0.0.4, eth3, 00:05:32
 C>* 192.169.1.0/24 is directly connected, eth0
 ```
 
-`RfvmB` Quagga routing table when `rfvmA` is running ExaBGP
+`RfvmB` Quagga routing table when `rfvmA` is running **ExaBGP**
 
 ```
 root@rfvmB:/home/ubuntu# vtysh
@@ -180,7 +180,7 @@ B>* 172.31.4.0/24 [20/0] via 40.0.0.4, eth3, 00:02:40
 C>* 192.169.1.0/24 is directly connected, eth0
 ```
 
-3 - Show me Mininet `pingall` output when `rfvmA` is running ExaBGP
+3 - Mininet `pingall` output when `rfvmA` is running ExaBGP
 
 ```
 mininet> pingall
@@ -192,5 +192,3 @@ h4 -> h1 h2 h3
 *** Results: 0% dropped (0/12 lost)
 mininet>
 ```
-
-
